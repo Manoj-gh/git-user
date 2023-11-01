@@ -41,10 +41,12 @@ const useAuth = (props?: UseAuthProps) => {
 
   const isValid = React.useCallback(() => {
     return isValidData() && Date.now() < new Date(auth?.expires_at).getTime();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth]);
 
   const isExpired = React.useCallback(() => {
     return isValidData() && Date.now() > new Date(auth?.expires_at).getTime();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth]);
 
   const expiresOn = React.useCallback(() => {
@@ -55,6 +57,7 @@ const useAuth = (props?: UseAuthProps) => {
 
   const canRefresh = React.useCallback(() => {
     return isValidData() && isExpired();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth]);
 
   const asyncRefresh = React.useCallback(
@@ -94,6 +97,7 @@ const useAuth = (props?: UseAuthProps) => {
         setIsRefreshingToken(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [auth, canRefresh, setAuth]
   );
 
@@ -117,6 +121,7 @@ const useAuth = (props?: UseAuthProps) => {
     } else {
       return undefined;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth?.refresh_token, canRefresh]);
 
   //Auto refresh
@@ -136,6 +141,7 @@ const useAuth = (props?: UseAuthProps) => {
       }
     }, 5000);
     return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth]);
 
   const result = {

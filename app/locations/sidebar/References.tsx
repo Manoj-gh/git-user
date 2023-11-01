@@ -207,6 +207,7 @@ const References = ({
     if ((auth !== undefined && !isValid) || isRefreshingToken) {
       closeModal({});
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isValid, isRefreshingToken]);
   return loading ? (
     <div className="p-5">

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Line, cbModal } from "@contentstack/venus-components";
+import { Button, cbModal } from "@contentstack/venus-components";
 
 import AdvancedOptionsModal from "./modals/AdvancedOptionsModal";
 import React from "react";

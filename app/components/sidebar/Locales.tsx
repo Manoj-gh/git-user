@@ -9,8 +9,6 @@ import {
   Accordion,
   Button,
   Checkbox,
-  Icon,
-  Info,
   ToggleSwitch,
 } from "@contentstack/venus-components";
 import { has, isEmpty } from "lodash";
@@ -75,8 +73,9 @@ function Locales({ validLocales, storageKey, closeModal }: LocalesProps) {
         });
       })
       .catch((error) => {
-        console.error("Error getting locales");
+        console.error("Error getting locales", error);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selections, isReady]);
 
   return loading ? (
