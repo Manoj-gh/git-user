@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  bulk-pnr-env-production:
+    build:
+      context: ../../
+      dockerfile: docker/production/Dockerfile
+    image: bulk-pnr-with-docker-production
+    ports:
+      - "3009:3000"
