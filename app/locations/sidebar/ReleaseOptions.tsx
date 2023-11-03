@@ -42,6 +42,7 @@ export const ReleaseOptions = ({
   setDepthValue,
 }: ReleaseOptionsProps) => {
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [loadingTitle, setLoadingTitle] = React.useState<string>("Loading...");
   const { createRelease, addToRelease, isReady } = useCsOAuthApi();
 
   const [releaseName, setReleaseName] = React.useState("");
@@ -87,7 +88,7 @@ export const ReleaseOptions = ({
   }, [releaseName, releaseDescription, isReady]);
 
   return loading ? (
-    <DefaultLoading />
+    <DefaultLoading title={loadingTitle} />
   ) : (
     <div className="w-full">
       <Accordion title="Releases" renderExpanded>
@@ -116,7 +117,8 @@ export const ReleaseOptions = ({
                   selectedRelease?.value || "",
                   data,
                   false,
-                  checkedReferences
+                  checkedReferences,
+                  setLoadingTitle
                 )
                   .then((res: AttToReleaseResult) => {
                     if (res.errorDetails && res.errorDetails.length > 0) {

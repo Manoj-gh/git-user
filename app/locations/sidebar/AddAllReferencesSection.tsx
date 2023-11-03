@@ -190,13 +190,14 @@ const AddAllReferencesSection = () => {
               buttonType="primary"
               onClick={() => {
                 if (selectedRelease === null) return;
-                setLoadingTitle("Adding items to Release...");
+                setLoadingTitle("Adding items...");
                 setLoading(true);
                 addToRelease(
                   selectedRelease.value,
                   data,
                   true,
-                  checkedReferences
+                  checkedReferences,
+                  setLoadingTitle
                 )
                   .then((res: AttToReleaseResult) => {
                     if (res.errorDetails && res.errorDetails.length > 0) {
@@ -216,10 +217,10 @@ const AddAllReferencesSection = () => {
                         });
                       });
                       showErrorDetail(
-                        "Adding to release failed. Please enter valid data.",
+                        "Adding to release failed. Check the console for details.",
                         errorDetail
                       );
-                      console.log(
+                      console.error(
                         "Error Adding to Release: ",
                         res,
                         errorDetail

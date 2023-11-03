@@ -1,10 +1,7 @@
-import {
-  ADD_REFERENCES_SELECTIONS_STORAGE_KEY,
-  COPY_ENTRY_SELECTIONS_STORAGE_KEY,
-} from "@/app/components/sidebar/models/models";
 import { Accordion, Button } from "@contentstack/venus-components";
 
 import AuthorizeButton from "@/app/components/AuthorizeButton";
+import { COPY_ENTRY_SELECTIONS_STORAGE_KEY } from "@/app/components/sidebar/models/models";
 import { showMessage } from "@/app/utils/notifications";
 import useAppStorage from "@/app/hooks/useAppStorage";
 import useAuth from "@/app/hooks/oauth/useAuth";
@@ -23,7 +20,7 @@ const SecurityOptions = ({ renderExpanded }: SecurityOptionsProps) => {
   return (
     <Accordion title="Security & Storage" renderExpanded={renderExpanded}>
       <div className="grid grid-cols-1 p-2 gap-2">
-        <div>
+        {/* <div>
           <Button
             buttonType="secondary"
             isFullWidth
@@ -36,7 +33,7 @@ const SecurityOptions = ({ renderExpanded }: SecurityOptionsProps) => {
           >
             Update Credentials
           </Button>
-        </div>
+        </div> */}
         <div>
           <AuthorizeButton />
         </div>
