@@ -16,9 +16,6 @@ const SecurityOptions = ({ renderExpanded }: SecurityOptionsProps) => {
   const { asyncRefresh, canRefresh, deleteAuth } = useAuth({
     from: "SecurityOptions",
   });
-  const { store: setReferenceSelections } = useAppStorage(
-    ADD_REFERENCES_SELECTIONS_STORAGE_KEY
-  );
   const { delete: deleteCopyEntrySelections } = useAppStorage(
     COPY_ENTRY_SELECTIONS_STORAGE_KEY
   );
