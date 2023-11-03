@@ -99,6 +99,7 @@ const CopyEntry = ({ disabled }: CopyEntryProps) => {
         }
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, currentLocale, disabled]);
 
   React.useEffect(() => {
@@ -146,6 +147,7 @@ const CopyEntry = ({ disabled }: CopyEntryProps) => {
       .finally(() => {
         setLoading(false);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry.uid, contentTypeUid, locales, isReady, disabled]);
 
   React.useEffect(() => {
@@ -490,7 +492,7 @@ const CopyEntry = ({ disabled }: CopyEntryProps) => {
                   </>
                 }
                 icon={<Icon icon="InfoCircleWhite" />}
-                type="light"
+                type="warning"
               />
             </div>
           )}

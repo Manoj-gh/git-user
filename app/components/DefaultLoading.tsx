@@ -31,7 +31,7 @@ const DefaultLoading = ({ title, showProgressBar, progress }: LoadingProps) => {
   );
 };
 
-const SimpleLoader = () => {
+export const SimpleLoader = () => {
   return (
     <div className="flex place-items-center justify-center w-full">
       <AsyncLoader color="#6C5CE7" />

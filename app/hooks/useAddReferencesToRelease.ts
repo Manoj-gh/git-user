@@ -2,10 +2,9 @@ import {
   ILocaleConfig,
   ReferenceLocaleData,
 } from "../components/sidebar/models/models.js";
-import React, { useContext } from "react";
 import { calculatePercentage, debug } from "../utils";
 
-import { set } from "lodash";
+import React from "react";
 import { useCsOAuthApi } from "../components/sidebar/ContentstackOAuthApi";
 import { useReferences } from "./useReferences";
 import useUserSelections from "./useUserSelections";
@@ -136,6 +135,7 @@ export const useAddReferencesToRelease = ({
           } catch (e) {
             console.log("Error while getting references");
             console.log(e);
+            setProgress(0);
             setLoading(false);
             setData([]);
             break;

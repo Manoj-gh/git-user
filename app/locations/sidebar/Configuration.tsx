@@ -1,18 +1,14 @@
 "use client";
 
 import {
-  Accordion,
-  Button,
   Icon,
   Info,
   ModalHeader,
-  cbModal,
 } from "@contentstack/venus-components";
+
 import {
   CsModalProps,
-  ILocaleConfig,
 } from "@/app/components/sidebar/models/models";
-
 import Locales from "@/app/components/sidebar/Locales";
 import { MarketplaceAppProvider } from "@/app/common/providers/MarketplaceAppProvider";
 import React from "react";

@@ -59,6 +59,7 @@ const AddAllReferencesSection = () => {
     totalReferenceCount,
     setDataLoadType,
     reload,
+    checkedReferences,
   } = useAddReferencesToRelease({
     depth: depthValue.value,
     entryUid: entry.uid,
@@ -178,7 +179,11 @@ const AddAllReferencesSection = () => {
               </Button>
             </div>
             <Button
-              disabled={selectedRelease === null || loadingReferences}
+              disabled={
+                selectedRelease === null ||
+                loadingReferences ||
+                totalReferenceCount === 0
+              }
               isFullWidth
               icon="PurpleAdd"
               isLoading={loadingReferences}
@@ -187,9 +192,15 @@ const AddAllReferencesSection = () => {
                 if (selectedRelease === null) return;
                 setLoadingTitle("Adding items to Release...");
                 setLoading(true);
-                addToRelease(selectedRelease.value, data, true, {})
+                addToRelease(
+                  selectedRelease.value,
+                  data,
+                  true,
+                  checkedReferences
+                )
                   .then((res: AttToReleaseResult) => {
                     if (res.errorDetails && res.errorDetails.length > 0) {
+                      console.log("Error Details", res.errorDetails);
                       const errorDetail: KeyValueObj = {};
                       res.errorDetails.forEach((e) => {
                         const keys = Object.keys(e.errors);
@@ -199,7 +210,7 @@ const AddAllReferencesSection = () => {
                           const value = e.errors[k];
                           if (item?.title && item?.uid) {
                             errorDetail[
-                              `${item?.title} [${item.uid}]`
+                              `${item?.title} [${item?.uid}]`
                             ] = `${value.join(", ")}`;
                           }
                         });
@@ -218,6 +229,7 @@ const AddAllReferencesSection = () => {
                     }
                   })
                   .catch((err: any) => {
+                    console.log("Error", err);
                     showError("Error Adding to Release");
                   })
                   .finally(() => {

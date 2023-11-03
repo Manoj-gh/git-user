@@ -129,9 +129,8 @@ const References = ({
                     const checked =
                       !newCheckedReferences[locale][reference.uniqueKey];
                     flat.forEach((f) => {
-                      newCheckedReferences[locale][f] = checked;
+                      newCheckedReferences[locale][f].checked = checked;
                     });
-                    console.log("CR", newCheckedReferences);
                     return newCheckedReferences;
                   }
                   return prev;
@@ -155,8 +154,9 @@ const References = ({
                 } else {
                   setCheckedReferences((prev) => {
                     const newCheckedReferences = { ...prev };
-                    newCheckedReferences[locale][reference.uniqueKey] =
-                      !newCheckedReferences[locale][reference.uniqueKey];
+                    newCheckedReferences[locale][reference.uniqueKey].checked =
+                      !newCheckedReferences[locale][reference.uniqueKey]
+                        .checked;
                     return newCheckedReferences;
                   });
                 }
@@ -207,6 +207,7 @@ const References = ({
     if ((auth !== undefined && !isValid) || isRefreshingToken) {
       closeModal({});
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isValid, isRefreshingToken]);
   return loading ? (
     <div className="p-5">
@@ -259,7 +260,7 @@ const References = ({
                   if (
                     checkedReferences[localeData.locale] &&
                     Object.values(checkedReferences[localeData.locale]).some(
-                      (v) => v === true
+                      (v) => v.checked === true
                     )
                   ) {
                     count++;
