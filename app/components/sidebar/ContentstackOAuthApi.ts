@@ -5,6 +5,8 @@ import {
   ReferenceLocaleData,
 } from "./models/models";
 
+import { ReferenceData } from "@/app/hooks/useReferences";
+import { debug } from "@/app/utils";
 import { getReleaseInfo } from "@/app/utils/data-utils";
 import { showError } from "@/app/utils/notifications";
 import useAuth from "@/app/hooks/oauth/useAuth";
@@ -74,7 +76,7 @@ interface SdkResult {
     release: string,
     data: ReferenceLocaleData[],
     allReferences: boolean,
-    checkedReferences: Record<string, Record<string, boolean>>,
+    checkedReferences: Record<string, Record<string, ReferenceData>>,
     options?: AxiosRequestConfig
   ) => Promise<AttToReleaseResult>;
   createEntry: (
@@ -261,27 +263,28 @@ export const useCsOAuthApi = (): SdkResult => {
       release: string,
       data: ReferenceLocaleData[],
       allReferences: boolean,
-      checkedReferences: Record<string, Record<string, boolean>>,
+      checkedReferences: Record<string, Record<string, ReferenceData>>,
       options?: AxiosRequestConfig
     ): Promise<AttToReleaseResult> => {
       let releaseInfo: IEntryReleaseInfo[] = getReleaseInfo(
-        data,
+        //data,
         checkedReferences,
         allReferences
       );
-
       //We only support the max number of items
       releaseInfo = releaseInfo.splice(0, MAX_ENTRIES_PER_RELEASE);
-      console.log("releaseInfo", releaseInfo, releaseInfo.length);
+
       const itemsStatus: ItemsResult[] = [];
       let maxItemsAtOnce: IEntryReleaseInfo[] = [];
+      let iteration = 1;
       while (releaseInfo.length > 0) {
         try {
           maxItemsAtOnce = releaseInfo.splice(0, MAX_ITEMS_AT_ONCE_PER_RELEASE);
           const data = {
             items: maxItemsAtOnce,
           };
-          console.log("data", data);
+          debug("Adding To Release", data);
+
           const response = await axios.executeRequest(
             `/v3/releases/${release}/items`,
             {
@@ -314,11 +317,12 @@ export const useCsOAuthApi = (): SdkResult => {
                 break;
             }
           } else {
-            console.log("response", response.data);
+            debug("response", response.data);
           }
         } catch (e: AxiosResponse<any> | any) {
           showError("Error adding items to release", e);
         }
+        iteration++;
       }
 
       if (itemsStatus && itemsStatus.length > 0) {
@@ -326,11 +330,20 @@ export const useCsOAuthApi = (): SdkResult => {
         itemsStatus.forEach((itemStatus: ItemsResult) => {
           if (itemStatus.errors && Object.keys(itemStatus.errors).length > 0) {
             const keys = Object.keys(itemStatus.errors);
+
             keys.forEach((key: string) => {
-              const index = parseInt(key.split(".")[1]);
-              const entryOrAssetInfo = itemStatus.items[index];
-              const newKey = entryOrAssetInfo.uid;
-              const value = itemStatus.errors[key];
+              let newKey = key;
+              let value = itemStatus.errors[key];
+
+              if (key.indexOf(".") === -1) {
+              } else {
+                const index =
+                  key.indexOf(".") > 0 ? parseInt(key.split(".")[1]) : key;
+                const entryOrAssetInfo = itemStatus.items[index];
+                newKey = entryOrAssetInfo.uid;
+                value = itemStatus.errors[key];
+              }
+
               newItemStatus.push({
                 items: itemStatus.items,
                 errors: {

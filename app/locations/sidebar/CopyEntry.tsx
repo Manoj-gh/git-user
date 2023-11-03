@@ -492,7 +492,7 @@ const CopyEntry = ({ disabled }: CopyEntryProps) => {
                   </>
                 }
                 icon={<Icon icon="InfoCircleWhite" />}
-                type="light"
+                type="warning"
               />
             </div>
           )}

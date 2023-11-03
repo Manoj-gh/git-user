@@ -21,13 +21,14 @@ import DefaultLoading from "@/app/components/DefaultLoading";
 import { KeyValueObj } from "@/app/types";
 import MaxReferencesReached from "@/app/components/sidebar/MaxReferencesReached";
 import React from "react";
+import { ReferenceData } from "@/app/hooks/useReferences";
 import { ReferenceLocaleData } from "@/app/components/sidebar/models/models";
 import ReleasesList from "./ReleasesList";
 import SelectDepth from "./SelectDepth";
 
 interface ReleaseOptionsProps {
   data: ReferenceLocaleData[];
-  checkedReferences: Record<string, Record<string, boolean>>;
+  checkedReferences: Record<string, Record<string, ReferenceData>>;
   totalReferenceCount: number;
   depthValue: any;
   setDepthValue: React.Dispatch<React.SetStateAction<any>>;
@@ -61,7 +62,7 @@ export const ReleaseOptions = ({
           return (
             v &&
             Object.values(v).some((v) => {
-              return v === true;
+              return v.checked === true;
             })
           );
         })

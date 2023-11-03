@@ -14,13 +14,15 @@ const MaxReferencesReached = ({ count }: MaxReferencesReachedProps) => {
           <Info
             content={
               <>
-                Your are exceeding the maximum items per release limit of{" "}
-                <strong>{MAX_ENTRIES_PER_RELEASE}</strong>. Select an strategy
-                to group your entries according to your needs.
+                <strong>{count}</strong> references found.
+                <br />
+                You are exceeding the maximum items per release limit of{" "}
+                <strong>{MAX_ENTRIES_PER_RELEASE}</strong>. <br />
+                Only those will be added.
               </>
             }
             icon={<Icon icon="InfoCircleWhite" />}
-            type="light"
+            type="warning"
           />
         </div>
       ) : count > 0 ? (
@@ -31,7 +33,7 @@ const MaxReferencesReached = ({ count }: MaxReferencesReachedProps) => {
             </>
           }
           icon={<Icon icon="InfoCircleWhite" />}
-          type="light"
+          type="success"
         />
       ) : (
         <></>

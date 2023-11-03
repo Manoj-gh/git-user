@@ -1,6 +1,7 @@
 import { get, has, set } from "lodash";
 
 import { KeyValueObj } from "../types";
+import { ReferenceData } from "../hooks/useReferences";
 import { ReferenceDetailLite } from "../components/sidebar/models/models";
 
 const mergeObjects = (target: any, source: any) => {
@@ -54,7 +55,7 @@ export const cleanLocalStorageItem = (item: string) => {
 export const getUniqueReferenceKeys = (
   arr: ReferenceDetailLite[],
   currentList: string[],
-  checkedReferences: Record<string, boolean>
+  checkedReferences: Record<string, ReferenceData>
 ): string[] => {
   currentList = currentList || [];
   currentList.push(
