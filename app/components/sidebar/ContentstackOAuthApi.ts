@@ -325,7 +325,9 @@ export const useCsOAuthApi = (): SdkResult => {
         } catch (e: AxiosResponse<any> | any) {
           showError("Error adding items to release", e);
         }
-        updateProgress(`Adding items ${(iteration * 100) / total}%...`);
+        updateProgress(
+          `Adding items ${Math.abs((iteration * 100) / total)}%...`
+        );
         iteration++;
       }
 

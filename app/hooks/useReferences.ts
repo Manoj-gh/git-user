@@ -103,6 +103,9 @@ export const useReferences = ({
   }, [checkedReferences, data]);
 
   React.useEffect(() => {
+    console.log("checkedReferences", checkedReferences);
+  }, [checkedReferences]);
+  React.useEffect(() => {
     if (!data || data.length === 0) return;
     let cl: Record<string, boolean> = {};
     let cr: Record<string, Record<string, ReferenceData>> = {};
@@ -149,8 +152,6 @@ export const useReferences = ({
   }, [data]);
 
   return {
-    // data: d,
-    // setData,
     checkedReferences,
     setCheckedReferences,
     checkedLocales,

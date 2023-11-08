@@ -11,15 +11,21 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import React, { useContext } from "react";
 import {
   ReferenceDetailLite,
   ReferenceLocaleData,
 } from "@/app/components/sidebar/models/models";
-import { genericFlatten, getUniqueReferenceKeys } from "@/app/utils";
+import {
+  genericFlatten,
+  getUniqueReferenceKeys,
+  getUniqueReferenceKeysFromList,
+} from "@/app/utils";
 
 import DefaultLoading from "@/app/components/DefaultLoading";
+import React from "react";
+import { ReferenceData } from "@/app/hooks/useReferences";
 import { ReleaseOptions } from "./ReleaseOptions";
+import { isEmpty } from "lodash";
 import { useAddReferencesToRelease } from "@/app/hooks/useAddReferencesToRelease";
 import useAuth from "@/app/hooks/oauth/useAuth";
 import useUserSelections from "@/app/hooks/useUserSelections";
@@ -27,6 +33,7 @@ import useUserSelections from "@/app/hooks/useUserSelections";
 // import { theData } from "@/app/utils/data";
 
 interface ReferencesProps {
+  depth: number;
   contentTypeUid: string;
   entryUid: string;
   loadedData: ReferenceLocaleData[];
@@ -39,6 +46,7 @@ interface ReferenceDetailComponentProps {
 }
 
 const References = ({
+  depth: depthValue,
   contentTypeUid,
   entryUid,
   loadedData,
@@ -49,55 +57,53 @@ const References = ({
     autoRefresh: true,
   });
 
-  const [depthValue, updateDepthValue] = React.useState({
-    label: process.env.NEXT_PUBLIC_CS_MAX_REF_DEPTH
-      ? process.env.NEXT_PUBLIC_CS_MAX_REF_DEPTH
-      : "5",
-    value: process.env.NEXT_PUBLIC_CS_MAX_REF_DEPTH
-      ? parseInt(process.env.NEXT_PUBLIC_CS_MAX_REF_DEPTH)
-      : 5,
-  });
+  //TODO: JAIME
+  // const [originallyLoadedData] =
+  //   React.useState<ReferenceLocaleData[]>(loadedData);
+  // const [selectedData, setSelectedData] =
+  //   React.useState<ReferenceLocaleData[]>(loadedData);
+
+  const [depth, setDepth] = React.useState(depthValue);
   const { locales } = useUserSelections();
+
   const {
     data,
+    totalReferenceCount,
     loading,
     progress,
     checkedLocales,
     checkedReferences,
     openReferences,
-    totalReferenceCount,
     setCheckedReferences,
     setOpenReferences,
+    reload,
   } = useAddReferencesToRelease({
-    depth: depthValue.value,
+    depth,
     entryUid: entryUid,
     contentTypeUid: contentTypeUid,
-    loadedData: loadedData,
+    loadedData,
+    loadType: "async",
   });
 
-  const searchReference = React.useCallback(
-    (
-      reference: ReferenceDetailLite,
-      uniqueKey: string
-    ): ReferenceDetailLite | null => {
-      if (reference.uniqueKey == uniqueKey) {
-        return reference;
-      } else if (
-        reference.references !== null &&
-        reference.references.length > 0
-      ) {
-        var i;
-        var result: any = null;
-        for (i = 0; result == null && i < reference.references.length; i++) {
-          result = searchReference(reference.references[i], uniqueKey);
-        }
-        return result;
+  const searchReference = (
+    reference: ReferenceDetailLite,
+    uniqueKey: string
+  ): ReferenceDetailLite | null => {
+    if (reference.uniqueKey == uniqueKey) {
+      return reference;
+    } else if (
+      reference.references !== null &&
+      reference.references.length > 0
+    ) {
+      var i;
+      var result: any = null;
+      for (i = 0; result == null && i < reference.references.length; i++) {
+        result = searchReference(reference.references[i], uniqueKey);
       }
-      return null;
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+      return result;
+    }
+    return null;
+  };
 
   const ReferenceDetailComponent = ({
     reference,
@@ -115,7 +121,7 @@ const References = ({
           <div className="py-4">
             <Checkbox
               key={`check_${reference.uniqueKey}`}
-              checked={checkedReferences[locale][reference.uniqueKey]}
+              checked={checkedReferences[locale][reference.uniqueKey].checked}
               onClick={() => {
                 setCheckedReferences((prev) => {
                   const r = searchReference(
@@ -127,7 +133,8 @@ const References = ({
                     const flat = genericFlatten("uniqueKey", "references", r);
                     const newCheckedReferences = { ...prev };
                     const checked =
-                      !newCheckedReferences[locale][reference.uniqueKey];
+                      !newCheckedReferences[locale][reference.uniqueKey]
+                        .checked;
                     flat.forEach((f) => {
                       newCheckedReferences[locale][f].checked = checked;
                     });
@@ -208,7 +215,8 @@ const References = ({
       closeModal({});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isValid, isRefreshingToken]);
+  }, [auth, isValid, isRefreshingToken]);
+
   return loading ? (
     <div className="p-5">
       <DefaultLoading
@@ -225,11 +233,14 @@ const References = ({
         <div className="grid grid-cols-5">
           <div className="p-4 m-1 col-span-2">
             <ReleaseOptions
+              depth={depth}
               data={data}
               checkedReferences={checkedReferences}
               totalReferenceCount={totalReferenceCount}
-              setDepthValue={updateDepthValue}
-              depthValue={depthValue}
+              onDepthUpdate={(depth: number) => {
+                setDepth(depth);
+                reload();
+              }}
             />
           </div>
           <div className="p-2 m-1  col-span-3">
