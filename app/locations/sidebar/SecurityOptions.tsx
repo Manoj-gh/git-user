@@ -20,20 +20,6 @@ const SecurityOptions = ({ renderExpanded }: SecurityOptionsProps) => {
   return (
     <Accordion title="Security & Storage" renderExpanded={renderExpanded}>
       <div className="grid grid-cols-1 p-2 gap-2">
-        {/* <div>
-          <Button
-            buttonType="secondary"
-            isFullWidth
-            disabled={!canRefresh}
-            onClick={() => {
-              //   setLoadingTitle("Refreshing Token...");
-              asyncRefresh(true);
-            }}
-            icon="RefreshCircleThin"
-          >
-            Update Credentials
-          </Button>
-        </div> */}
         <div>
           <AuthorizeButton />
         </div>
@@ -45,6 +31,10 @@ const SecurityOptions = ({ renderExpanded }: SecurityOptionsProps) => {
               deleteAuth().then(() => {
                 deleteCopyEntrySelections().then(() => {
                   showMessage("Data cleared successfully");
+
+                  setTimeout(() => {
+                    document.location.reload();
+                  }, 2000);
                 });
               });
             }}

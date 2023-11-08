@@ -10,8 +10,8 @@ const OAuthCallback = dynamic(
   }
 );
 
-const callback = () => {
+const Callback = () => {
   return <OAuthCallback />;
 };
 
-export default callback;
+export default Callback;
