@@ -11,8 +11,12 @@ export const DefaultFetchRepeatStrategy = class implements FetchRepeatStrategy {
   resolveDelay: (attempt: number) => number;
 
   constructor() {
-    this.attempts = 5;
-    this.initialDelay = 250;
+    this.attempts = process.env.NEXT_PUBLIC_CS_MAX_REF_DEPTH
+      ? parseInt(process.env.NEXT_PUBLIC_CS_MAX_REF_DEPTH)
+      : 5;
+    this.initialDelay = process.env.NEXT_PUBLIC_CS_RETRY_INITIAL_DELAY
+      ? parseInt(process.env.NEXT_PUBLIC_CS_RETRY_INITIAL_DELAY)
+      : 250;
     this.resolveDelay = (attempt: number) => {
       console.warn(
         `Attempt #${attempt + 1} failed, waiting ${

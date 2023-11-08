@@ -10,8 +10,11 @@ const fetchPlus = async (
   options = {},
   retries: number,
   currentRetryCount: number = 0
-): Promise<any> =>
-  fetch(infoOrUrl, options)
+): Promise<any> => {
+  const delay = process.env.NEXT_PUBLIC_CS_RETRY_INITIAL_DELAY
+    ? parseInt(process.env.NEXT_PUBLIC_CS_RETRY_INITIAL_DELAY)
+    : 250;
+  return fetch(infoOrUrl, options)
     .then(async (res) => {
       debug("fetchPlus status: ", res.status);
       if (res.ok) {
@@ -21,9 +24,9 @@ const fetchPlus = async (
         debug(`Error fetching data on attempt #${currentRetryCount}...`);
         if (retries > 0) {
           currentRetryCount++;
-          debug("Waiting...", currentRetryCount * 250, "ms");
+          debug("Waiting...", currentRetryCount * delay, "ms");
           await new Promise((resolve) =>
-            setTimeout(resolve, currentRetryCount * 250)
+            setTimeout(resolve, currentRetryCount * delay)
           );
           debug("Retrying...");
           return fetchPlus(infoOrUrl, options, retries - 1, currentRetryCount);
@@ -37,6 +40,7 @@ const fetchPlus = async (
       return res.json();
     })
     .catch((error) => console.error(error.message));
+};
 
 export const FetchPlusStrategy = class implements FetchRepeatStrategy {
   async executeRequest(infoOrUrl: RequestInfo | URL, config?: RequestInit) {
