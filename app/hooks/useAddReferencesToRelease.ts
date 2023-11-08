@@ -58,6 +58,7 @@ export const useAddReferencesToRelease = ({
   //Load References
   React.useEffect(() => {
     //TODO: We don't need the synchronous option, unless we face issues.
+
     function loadReferencesByLocaleAsync() {
       if (!canLoadReferences()) {
         setData(loadedData && loadedData?.length > 0 ? loadedData : []);
@@ -150,7 +151,7 @@ export const useAddReferencesToRelease = ({
       loadReferencesByLocaleAsync();
     } else {
       loadReferencesByLocaleSync().then(() => {
-        console.log("References loaded");
+        debug("References loaded");
       });
     }
 

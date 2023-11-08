@@ -10,17 +10,19 @@ import { ModalHeader } from "@contentstack/venus-components";
 import React from "react";
 import References from "../References";
 
-interface ActionsModalProps extends CsModalProps {
+interface AdvancedOptionsModalProps extends CsModalProps {
   entryUid: string;
   contentTypeUid: string;
   loadedData: ReferenceLocaleData[];
+  depth: number;
 }
 const AdvancedOptionsModal = ({
+  depth,
   contentTypeUid,
   entryUid,
   closeModal,
   loadedData,
-}: ActionsModalProps) => {
+}: AdvancedOptionsModalProps) => {
   return (
     <MarketplaceAppProvider>
       <div>
@@ -30,6 +32,7 @@ const AdvancedOptionsModal = ({
           </div>
           <div className="h-[49vh] overflow-y-scroll">
             <References
+              depth={depth}
               contentTypeUid={contentTypeUid}
               entryUid={entryUid}
               loadedData={loadedData}

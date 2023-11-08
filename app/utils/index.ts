@@ -60,7 +60,9 @@ export const getUniqueReferenceKeys = (
   currentList = currentList || [];
   currentList.push(
     ...arr
-      .filter((r) => checkedReferences && checkedReferences[r.uniqueKey])
+      .filter(
+        (r) => checkedReferences && checkedReferences[r.uniqueKey].checked
+      )
       .map((a) => a.uniqueKey)
   );
 
@@ -70,6 +72,24 @@ export const getUniqueReferenceKeys = (
         arr[i].references,
         currentList,
         checkedReferences
+      );
+    }
+  }
+  return currentList.filter((v, i, a) => a.indexOf(v) === i);
+};
+
+export const getUniqueReferenceKeysFromList = (
+  arr: ReferenceDetailLite[],
+  currentList: string[]
+): string[] => {
+  currentList = currentList || [];
+  currentList.push(...arr.map((a) => a.uniqueKey));
+
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].references) {
+      currentList = getUniqueReferenceKeysFromList(
+        arr[i].references,
+        currentList
       );
     }
   }

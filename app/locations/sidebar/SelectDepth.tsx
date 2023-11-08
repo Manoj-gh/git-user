@@ -38,7 +38,9 @@ const SelectDepth = ({
         placeholder="Select Depth"
         onChange={(v: any) => {
           setDepth(() => {
-            if (onDepthSelected) onDepthSelected(v);
+            if (onDepthSelected) {
+              onDepthSelected(v);
+            }
             return v;
           });
         }}

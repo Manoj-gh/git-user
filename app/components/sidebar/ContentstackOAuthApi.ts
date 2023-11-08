@@ -77,6 +77,7 @@ interface SdkResult {
     data: ReferenceLocaleData[],
     allReferences: boolean,
     checkedReferences: Record<string, Record<string, ReferenceData>>,
+    updateProgress: React.Dispatch<React.SetStateAction<string>>,
     options?: AxiosRequestConfig
   ) => Promise<AttToReleaseResult>;
   createEntry: (
@@ -264,6 +265,7 @@ export const useCsOAuthApi = (): SdkResult => {
       data: ReferenceLocaleData[],
       allReferences: boolean,
       checkedReferences: Record<string, Record<string, ReferenceData>>,
+      updateProgress: React.Dispatch<React.SetStateAction<string>>,
       options?: AxiosRequestConfig
     ): Promise<AttToReleaseResult> => {
       let releaseInfo: IEntryReleaseInfo[] = getReleaseInfo(
@@ -277,6 +279,7 @@ export const useCsOAuthApi = (): SdkResult => {
       const itemsStatus: ItemsResult[] = [];
       let maxItemsAtOnce: IEntryReleaseInfo[] = [];
       let iteration = 1;
+      const total = releaseInfo.length / MAX_ITEMS_AT_ONCE_PER_RELEASE;
       while (releaseInfo.length > 0) {
         try {
           maxItemsAtOnce = releaseInfo.splice(0, MAX_ITEMS_AT_ONCE_PER_RELEASE);
@@ -322,6 +325,9 @@ export const useCsOAuthApi = (): SdkResult => {
         } catch (e: AxiosResponse<any> | any) {
           showError("Error adding items to release", e);
         }
+        updateProgress(
+          `Adding items ${Math.abs((iteration * 100) / total)}%...`
+        );
         iteration++;
       }
 

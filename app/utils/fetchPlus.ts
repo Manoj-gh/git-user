@@ -13,18 +13,19 @@ const fetchPlus = async (
 ): Promise<any> =>
   fetch(infoOrUrl, options)
     .then(async (res) => {
+      debug("fetchPlus status: ", res.status);
       if (res.ok) {
         return res.json();
       }
       if (res.status === 429) {
-        console.log(`Error fetching data on attempt #${currentRetryCount}...`);
+        debug(`Error fetching data on attempt #${currentRetryCount}...`);
         if (retries > 0) {
           currentRetryCount++;
-          console.log("Waiting...", currentRetryCount * 250, "ms");
+          debug("Waiting...", currentRetryCount * 250, "ms");
           await new Promise((resolve) =>
             setTimeout(resolve, currentRetryCount * 250)
           );
-          console.log("Retrying...");
+          debug("Retrying...");
           return fetchPlus(infoOrUrl, options, retries - 1, currentRetryCount);
         }
       }

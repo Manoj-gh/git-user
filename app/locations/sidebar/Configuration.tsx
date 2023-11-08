@@ -1,14 +1,8 @@
 "use client";
 
-import {
-  Icon,
-  Info,
-  ModalHeader,
-} from "@contentstack/venus-components";
+import { Icon, Info, ModalHeader } from "@contentstack/venus-components";
 
-import {
-  CsModalProps,
-} from "@/app/components/sidebar/models/models";
+import { CsModalProps } from "@/app/components/sidebar/models/models";
 import Locales from "@/app/components/sidebar/Locales";
 import { MarketplaceAppProvider } from "@/app/common/providers/MarketplaceAppProvider";
 import React from "react";
@@ -22,11 +16,11 @@ export interface SelectLanguagesProps {
 const SelectLanguages = ({ disabled }: SelectLanguagesProps) => {
   const { locales } = useUserSelections();
   return (
-    <div className="px-2">
+    <div className="p-2">
       <div className="">
         <SelectLanguagesButton disabled={disabled} />
-        <div className="pt-2">
-          {!locales?.some((l) => l.checked) && (
+        {!locales?.some((l) => l.checked) && (
+          <div className="py-2">
             <Info
               content={
                 <>
@@ -38,8 +32,8 @@ const SelectLanguages = ({ disabled }: SelectLanguagesProps) => {
               icon={<Icon icon="InfoCircleWhite" />}
               type="attention"
             />
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

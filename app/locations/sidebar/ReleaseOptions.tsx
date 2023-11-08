@@ -2,13 +2,10 @@ import {
   Accordion,
   Button,
   Field,
-  Icon,
-  Info,
   TextInput,
 } from "@contentstack/venus-components";
 import {
   AttToReleaseResult,
-  MAX_ENTRIES_PER_RELEASE,
   useCsOAuthApi,
 } from "@/app/components/sidebar/ContentstackOAuthApi";
 import {
@@ -25,23 +22,25 @@ import { ReferenceData } from "@/app/hooks/useReferences";
 import { ReferenceLocaleData } from "@/app/components/sidebar/models/models";
 import ReleasesList from "./ReleasesList";
 import SelectDepth from "./SelectDepth";
+import { on } from "events";
 
 interface ReleaseOptionsProps {
+  depth: number;
   data: ReferenceLocaleData[];
   checkedReferences: Record<string, Record<string, ReferenceData>>;
   totalReferenceCount: number;
-  depthValue: any;
-  setDepthValue: React.Dispatch<React.SetStateAction<any>>;
+  onDepthUpdate: (depth: number) => void;
 }
 
 export const ReleaseOptions = ({
+  depth,
+  onDepthUpdate,
   checkedReferences,
   totalReferenceCount,
   data,
-  depthValue,
-  setDepthValue,
 }: ReleaseOptionsProps) => {
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [loadingTitle, setLoadingTitle] = React.useState<string>("Loading...");
   const { createRelease, addToRelease, isReady } = useCsOAuthApi();
 
   const [releaseName, setReleaseName] = React.useState("");
@@ -52,7 +51,10 @@ export const ReleaseOptions = ({
 
   const [creatingRelease, setCreatingRelease] = React.useState(false);
   const [selectedRelease, setSelectedRelease] = React.useState<any>(null);
-
+  const [depthValue, updateDepthValue] = React.useState({
+    label: depth.toString(),
+    value: depth,
+  });
   //Check whether any references are checked so that we can enable the add to release button
   React.useEffect(() => {
     if (selectedRelease !== null) {
@@ -87,7 +89,7 @@ export const ReleaseOptions = ({
   }, [releaseName, releaseDescription, isReady]);
 
   return loading ? (
-    <DefaultLoading />
+    <DefaultLoading title={loadingTitle} />
   ) : (
     <div className="w-full">
       <Accordion title="Releases" renderExpanded>
@@ -103,10 +105,14 @@ export const ReleaseOptions = ({
             <SelectDepth
               depthValue={depthValue}
               onDepthSelected={(v) => {
-                setDepthValue(v);
+                updateDepthValue(() => {
+                  onDepthUpdate(v.value);
+                  return v;
+                });
               }}
             />
           </div>
+          <MaxReferencesReached count={totalReferenceCount} />
           <div>
             <Button
               disabled={!canAddToRelease}
@@ -116,7 +122,8 @@ export const ReleaseOptions = ({
                   selectedRelease?.value || "",
                   data,
                   false,
-                  checkedReferences
+                  checkedReferences,
+                  setLoadingTitle
                 )
                   .then((res: AttToReleaseResult) => {
                     if (res.errorDetails && res.errorDetails.length > 0) {
@@ -161,7 +168,6 @@ export const ReleaseOptions = ({
               Add
             </Button>
           </div>
-          <MaxReferencesReached count={totalReferenceCount} />
         </div>
       </Accordion>
       <Accordion title="Create New Release" renderExpanded>

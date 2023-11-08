@@ -106,7 +106,7 @@ const AddAllReferencesSection = () => {
         />
       </div>
       <SelectLanguages disabled={loadingReferences} />
-      <div className="p-2">
+      <div className="px-2">
         <Button
           isFullWidth
           buttonType="secondary"
@@ -122,6 +122,7 @@ const AddAllReferencesSection = () => {
             cbModal({
               component: (props: any) => (
                 <AdvancedOptionsModal
+                  depth={depthValue.value}
                   loadedData={data}
                   entryUid={entry.uid}
                   contentTypeUid={contentTypeUid}
@@ -141,8 +142,8 @@ const AddAllReferencesSection = () => {
         </Button>
       </div>
       <div className="p-2">
-        <div className="pb-2">
-          {showLoadOptions && (
+        {process.env.NEXT_PUBLIC_CS_SHOW_LOAD_OPTIONS === "true" && (
+          <div className="p-2">
             <ToggleSwitch
               onClick={() => {
                 setLoadSynchronously((prev) => {
@@ -153,19 +154,16 @@ const AddAllReferencesSection = () => {
               }}
               label={"Load Synchronously"}
               checked={loadSynchronously === "sync"}
-              disabled={loadingReferences}
+              disabled={loadingReferences || totalReferenceCount === 0}
             />
-          )}
-        </div>
+          </div>
+        )}
 
         {loadingReferences ? (
           <DefaultLoading title={loadingTitleReferences} />
         ) : (
           <>
-            <div className="pb-2">
-              <MaxReferencesReached count={totalReferenceCount} />
-            </div>
-            <div className="pb-2">
+            <div className="pb-4">
               <Button
                 disabled={loadingReferences}
                 isFullWidth
@@ -177,6 +175,9 @@ const AddAllReferencesSection = () => {
               >
                 {totalReferenceCount > 0 ? `Reload ` : `Load `}References
               </Button>
+            </div>
+            <div className="pb-2">
+              <MaxReferencesReached count={totalReferenceCount} />
             </div>
             <Button
               disabled={
@@ -190,13 +191,14 @@ const AddAllReferencesSection = () => {
               buttonType="primary"
               onClick={() => {
                 if (selectedRelease === null) return;
-                setLoadingTitle("Adding items to Release...");
+                setLoadingTitle("Adding items...");
                 setLoading(true);
                 addToRelease(
                   selectedRelease.value,
                   data,
                   true,
-                  checkedReferences
+                  checkedReferences,
+                  setLoadingTitle
                 )
                   .then((res: AttToReleaseResult) => {
                     if (res.errorDetails && res.errorDetails.length > 0) {
@@ -216,10 +218,10 @@ const AddAllReferencesSection = () => {
                         });
                       });
                       showErrorDetail(
-                        "Adding to release failed. Please enter valid data.",
+                        "Adding to release failed. Check the console for details.",
                         errorDetail
                       );
-                      console.log(
+                      console.error(
                         "Error Adding to Release: ",
                         res,
                         errorDetail
