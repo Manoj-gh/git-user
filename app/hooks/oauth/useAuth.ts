@@ -32,11 +32,7 @@ const useAuth = (props?: UseAuthProps) => {
 
   const isValidData = React.useCallback(() => {
     if (isEmpty(auth)) return false;
-    return (
-      has(auth, "access_token") &&
-      has(auth, "refresh_token") &&
-      has(auth, "expires_at")
-    );
+    return has(auth, "access_token") && has(auth, "refresh_token") && has(auth, "expires_at");
   }, [auth]);
 
   const isValid = React.useCallback(() => {
@@ -112,6 +108,7 @@ const useAuth = (props?: UseAuthProps) => {
         const response = await axios.post(REFRESH_TOKEN_URL, {
           refreshToken: auth?.refresh_token,
           code_verifier,
+          region,
         });
         setIsRefreshingToken(false);
         return response.data;

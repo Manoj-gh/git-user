@@ -1,8 +1,6 @@
 "use client";
 
-import getContentstackOAuthUrl, {
-  windowProps,
-} from "../hooks/useContentstackOAuth";
+import getContentstackOAuthUrl, { windowProps } from "../hooks/useContentstackOAuth";
 
 import { EXCHANGE_CODE_URL } from "../hooks/oauth/constants";
 import React from "react";
@@ -15,12 +13,9 @@ import { showError } from "../utils/notifications";
 import useAuth from "../hooks/oauth/useAuth";
 
 type TButton = typeof import("@contentstack/venus-components").Button;
-const Button: TButton = dynamic(
-  () => import("@contentstack/venus-components").then((mod) => mod.Button),
-  {
-    ssr: false,
-  }
-);
+const Button: TButton = dynamic(() => import("@contentstack/venus-components").then((mod) => mod.Button), {
+  ssr: false,
+});
 
 const AuthorizeButton = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -43,6 +38,7 @@ const AuthorizeButton = () => {
         data: {
           code,
           code_verifier,
+          region,
         },
       })
         .then((res) => {
@@ -67,10 +63,7 @@ const AuthorizeButton = () => {
     let APP_BASE_URL = baseAppUrlSelector(region);
     const url = await getContentstackOAuthUrl(APP_BASE_URL);
     const popup = window.open(url, "User Authentication", windowProps);
-    popup?.opener.postMessage(
-      { message: "Open window" },
-      process.env.NEXT_PUBLIC_CS_LAUNCH_HOST
-    );
+    popup?.opener.postMessage({ message: "Open window" }, process.env.NEXT_PUBLIC_CS_LAUNCH_HOST);
   };
 
   const { setAuth, resetAuth: clearAuth } = useAuth({
