@@ -1,20 +1,6 @@
-import {
-  Accordion,
-  Button,
-  Icon,
-  ToggleSwitch,
-  Tooltip,
-  cbModal,
-} from "@contentstack/venus-components";
-import {
-  AttToReleaseResult,
-  useCsOAuthApi,
-} from "@/app/components/sidebar/ContentstackOAuthApi";
-import {
-  showError,
-  showErrorDetail,
-  showSuccess,
-} from "@/app/utils/notifications";
+import { Accordion, Button, Icon, ToggleSwitch, Tooltip, cbModal } from "@contentstack/venus-components";
+import { AttToReleaseResult, useCsOAuthApi } from "@/app/components/sidebar/ContentstackOAuthApi";
+import { showError, showErrorDetail, showSuccess } from "@/app/utils/notifications";
 
 import AdvancedOptionsModal from "./modals/AdvancedOptionsModal";
 import DefaultLoading from "@/app/components/DefaultLoading";
@@ -30,8 +16,6 @@ import { useBranch } from "@/app/hooks/useBranch";
 import { useEntryChange } from "@/app/hooks/useEntryChange";
 import useUserSelections from "@/app/hooks/useUserSelections";
 
-const showLoadOptions = process.env.NEXT_PUBLIC_CS_SHOW_LOAD_OPTIONS === "true";
-
 const AddAllReferencesSection = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [loadingTitle, setLoadingTitle] = React.useState<string>("Loading...");
@@ -40,17 +24,11 @@ const AddAllReferencesSection = () => {
   const { branch } = useBranch();
   const { addToRelease } = useCsOAuthApi();
   const [depthValue, updateDepthValue] = React.useState({
-    label: process.env.NEXT_PUBLIC_CS_MAX_REF_DEPTH
-      ? process.env.NEXT_PUBLIC_CS_MAX_REF_DEPTH
-      : "5",
-    value: process.env.NEXT_PUBLIC_CS_MAX_REF_DEPTH
-      ? parseInt(process.env.NEXT_PUBLIC_CS_MAX_REF_DEPTH)
-      : 5,
+    label: process.env.NEXT_PUBLIC_CS_MAX_REF_DEPTH ? process.env.NEXT_PUBLIC_CS_MAX_REF_DEPTH : "5",
+    value: process.env.NEXT_PUBLIC_CS_MAX_REF_DEPTH ? parseInt(process.env.NEXT_PUBLIC_CS_MAX_REF_DEPTH) : 5,
   });
   const { entry, contentTypeUid } = useEntryChange();
-  const [loadSynchronously, setLoadSynchronously] = React.useState<
-    "sync" | "async"
-  >("async");
+  const [loadSynchronously, setLoadSynchronously] = React.useState<"sync" | "async">("async");
 
   const {
     data,
@@ -180,11 +158,7 @@ const AddAllReferencesSection = () => {
               <MaxReferencesReached count={totalReferenceCount} />
             </div>
             <Button
-              disabled={
-                selectedRelease === null ||
-                loadingReferences ||
-                totalReferenceCount === 0
-              }
+              disabled={selectedRelease === null || loadingReferences || totalReferenceCount === 0}
               isFullWidth
               icon="PurpleAdd"
               isLoading={loadingReferences}
@@ -193,13 +167,7 @@ const AddAllReferencesSection = () => {
                 if (selectedRelease === null) return;
                 setLoadingTitle("Adding items...");
                 setLoading(true);
-                addToRelease(
-                  selectedRelease.value,
-                  data,
-                  true,
-                  checkedReferences,
-                  setLoadingTitle
-                )
+                addToRelease(selectedRelease.value, data, true, checkedReferences, setLoadingTitle)
                   .then((res: AttToReleaseResult) => {
                     if (res.errorDetails && res.errorDetails.length > 0) {
                       console.log("Error Details", res.errorDetails);
@@ -211,21 +179,12 @@ const AddAllReferencesSection = () => {
                           const item = e.items.find((i) => i.uid === k);
                           const value = e.errors[k];
                           if (item?.title && item?.uid) {
-                            errorDetail[
-                              `${item?.title} [${item?.uid}]`
-                            ] = `${value.join(", ")}`;
+                            errorDetail[`${item?.title} [${item?.uid}]`] = `${value.join(", ")}`;
                           }
                         });
                       });
-                      showErrorDetail(
-                        "Adding to release failed. Check the console for details.",
-                        errorDetail
-                      );
-                      console.error(
-                        "Error Adding to Release: ",
-                        res,
-                        errorDetail
-                      );
+                      showErrorDetail("Adding to release failed. Check the console for details.", errorDetail);
+                      console.error("Error Adding to Release: ", res, errorDetail);
                     } else {
                       showSuccess("References added to Release Successfully");
                     }
