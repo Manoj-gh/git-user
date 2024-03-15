@@ -70,11 +70,49 @@ Once the exchange is completed, and the credentials are stored, the UI will disp
 
 **Note:** You can always reset your credentials (i.e. removed any stored credential information by clicking the `Clear Data` button within the Security Section). That will force the users to re-authenticate.
 
-#### API Proxying
-
 Once the users are authenticated they get access to the following screen:
 
-#### Configuration
+![First Time App Access](/readme-images/app-first-time.png)
+
+Review the **User Guide** section below for details on how to use the app.
+
+#### API Proxying
+
+As mentioned before, the UI needs to communicate with Contenstack's API so the credentials are both encrypted and not available in the client.
+
+For this purpose there's an `api` endpoint that receives these requests and send them to the Contentstack's endpoints appending the appropriate headers with the appropriate credentials.
+
+The api in question can be found in the following route inside the project:
+
+`/app/api/v3/[...slug]/route.ts`
+
+The most relevant pieces of logic here are:
+
+- Header Preparation
+- Fetch Strategy
+
+##### Header Preparation
+
+The header preparation occurs in the `prepareHeaders` function available under `/app/api/helper.ts` and all it does is to ensure the appropriate headers area available in the request and those that are encrypted are decrypted in the server and sent to Contentstack's API.
+
+[Prepare Header Function](/app/api/helper.ts)
+
+##### Fetch Strategy
+
+The proxy api relies also on a Fetch Strategy implemented in the following file:
+
+`/app/utils/fetchPlus.ts`
+
+As can be deducted from the code, this strategy makes the `fetch` calls and checks for 429 responses, which are generated when a limit on API calls is reached. For those responses, the strategy awaits for a given period of time and then retries. The await time and number of retries are configured in the environment variables with the following two variables:
+
+```bash
+NEXT_PUBLIC_CS_RETRY_INITIAL_DELAY=250
+NEXT_PUBLIC_CS_MAX_REF_DEPTH=5
+```
+
+Please be aware tha the wait time is increased proportionally to the number of attempts being made, so on the first retry, the strategy awaits the configured value, in the example provided the retry would wait 250 milliseconds. If another 429 is received, then the strategy would wait 500 milliseconds before retrying, and so on and so forth.
+
+If the maximum number of attempts is reached, then we return the response from Contentstack's API.
 
 #### Registration and Local Development
 
