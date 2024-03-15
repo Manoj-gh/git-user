@@ -57,9 +57,8 @@ export async function POST(request: Request) {
     });
   } catch (e) {
     console.log("Error exchanging the code", e);
-    return new Response(
-      `Something went wrong exchanging the code: '${code}, with verifier: ${codeVerifier}', ${e}`,
-      { status: 500 }
-    );
+    return new Response(`Something went wrong exchanging the code: '${code}, with verifier: ${codeVerifier}', ${e}`, {
+      status: 500,
+    });
   }
 }
