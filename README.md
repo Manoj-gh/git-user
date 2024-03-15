@@ -435,6 +435,53 @@ NEXT_PUBLIC_CS_SHOW_LOAD_OPTIONS=false
 
 ### User Guide
 
+The application has three sections:
+
+- **Releases**: this section allows users to bulk-add entries to an existing release including all its dependencies and in all its locales.
+- **Localization**: this section allows users to copy entries across locales, specifying the locales to be copied on. This utility will copy the locale-specific version. For example if an entry called `Entry 1` is localized and translated
+  into `Entrada 1` (Spanish), when you use the tool to copy the master `Entry 1` entry, assuming you only copy in Master (English) and Spanish, the tool will create two copies, one called `Copy of Entry` and another one called `Copy of Entrada`, those being a copy of their respective versions on each language. The tool allows to affect the naming of the copied entry and that will be described in the dedicated section below for that section of the tool.
+- **Security & Storage**: this section allows user to reauthenticate and clear their stored credentials in the browser.
+
+#### Releases
+
+In this section of the UI the editor can see/do:
+
+1. Releases Dropdown: the user can choose the release where the entries and its references will be added to.
+1. Depth Dropdown: the user can select how deep those references need to be retrieved from.
+1. Select Languages Button: this allows the editor to choose which languages the tool should retrieve the references from.
+1. Advanced Options: this button shows an advanced view of the retrieved references. In this view the users can:
+   1. The user can select the release it wants the entries added to.
+   1. Likewise can modify the depth directly from here.
+   1. The **Create New Release** section allows to create a new release from here by providing a name an a description.
+   1. The **References** accordion allows to handpick which references exactly need to be added allowing the user to exclude thoes he/she might not need to add.
+   1. Once the selected references are ready, simply click the **+Add** button.
+1. Load/Reload References Button: this button will load all the references and will do so based on the selected languages.
+1. To the right corner of the Releases accordion there's a Reload Releases icon, which allows to reload the list of releases, in case new releases were created while the app was being used.
+1. The user can always change the depth and selected languages and reload the references.
+1. Once the selected references are ready, simply click the **Add References to Release** button.
+
+**Note**: When adding entries to a release the system doesn't check whether those references fulfill the publishing requirements and that needs to be validated at deployment time. For example, if the any entry is missing a mandatory field, the editor will be able to add them to a release, however, when the release gets deployed (Published) the process will fail unless those mandatory fields are filled in.
+
+#### Localization
+
+In this section of the UI the editor can see/do:
+
+1. Provide a name for the copies, this title will be complemented by the following selections:
+   1. Append Date String: will add the current date as a suffix to the copies' title.
+   1. Keep original title reference: this will keep the original entry title between square brackets in the copies' title.
+   1. Force url uniqueness: will ensure that when an entry has a url field, its value is unique by appending a unique numeric slug to it.
+1. **Select Languages Button**: Allows the editor to choose the locales the entry needs to be copied to. Keep in mind that only locales where entry has localized versions will be available to choose. If no languages are available, simply use the default copy command for an entry.
+1. **Copy Entry Button**: once your selections are ready, simply push this button to start the copy process.
+
+##### Security & Storage
+
+In this section of the UI the editor can see/do:
+
+1. **Authorize Button**: this will make the editor to go through the authentication process again.
+1. **Clear Data Button**: this will remove any stored credentials and will require re-authentication to use the app again.
+
+**Note**: The stored credentials only last for 60 minutes and the system will automatically try to refresh them when they expired, if you experience issues with the app after long periods of inactivity, please try clearing the data and re-authenticate using the Authorize button.
+
 ### Additional Resources
 
 This section contain several useful documentation links:
