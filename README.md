@@ -78,7 +78,7 @@ Review the **User Guide** section below for details on how to use the app.
 
 #### API Proxying
 
-As mentioned before, the UI needs to communicate with Contenstack's API so the credentials are both encrypted and not available in the client.
+As mentioned before, the UI needs to communicate with Contentstack's API so the credentials are both encrypted and not available in the client.
 
 For this purpose there's an `api` endpoint that receives these requests and send them to the Contentstack's endpoints appending the appropriate headers with the appropriate credentials.
 
